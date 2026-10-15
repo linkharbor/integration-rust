@@ -1,0 +1,20 @@
+# systemd unit — copy to /etc/systemd/system/integration-rust.service,
+# put the three secrets into /etc/integration-rust.env (chmod 600):
+#   LH_INGEST_URL=https://dock.at-harbor.com/v1/ingest/123
+#   LH_INGEST_SECRET=…
+#   RUST_RCON_PASSWORD=…
+[Unit]
+Description=LinkHarbor Rust agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/integration-rust.env
+ExecStart=/usr/bin/python3 /opt/integration-rust/agent.py --host 127.0.0.1 --port 28016 --name "My Rust Server" --address "203.0.113.10:28015" --url "https://discord.gg/xyz"
+Restart=always
+RestartSec=10
+User=nobody
+
+[Install]
+WantedBy=multi-user.target
